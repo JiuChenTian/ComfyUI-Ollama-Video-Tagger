@@ -16,7 +16,8 @@
 4. 重启 ComfyUI。
 
 连接图示：
-<img width="1000" height="207" alt="image" src="https://github.com/user-attachments/assets/dff42c1f-96b8-48cc-949b-6ce8ed2eaeda" />
+<img width="1339" height="284" alt="image" src="https://github.com/user-attachments/assets/b87e41c8-5c20-4dcf-9598-8b0716902f91" />
+
 
 ## 🛠️ 使用节点说明
 1.Video Frame Collage Builder (Adaptive & Segmented)
@@ -39,8 +40,11 @@ Single_Specific_Segment（指定单一片段模式）：它不再输出多图批
 作用：接收拼接好的图像，传入ollama/本地模型进行反推
 可选形式：本地ollama转发、本地gguf（需要大脑和眼睛-mmproj）、本地safetensors
 注：描述提示词需要按所选模型自行更改
+<img width="270" height="199" alt="image" src="https://github.com/user-attachments/assets/a12f0ac2-9ee5-4e6f-9a66-cc10d80a32a3" />
 
 3.Video Text Prompt Concatenator (Auto-Append)
+<img width="254" height="149" alt="image" src="https://github.com/user-attachments/assets/92ca9fa6-f69a-45bf-a85f-9daaf95dee05" />
+
 3.1 join_delimiter（衔接分隔符）：决定每两段分镜描述之间，用什么符号来隔开。
 选项代表的含义：\n\n（当前默认-最推荐）：代表换行两次（即空一行）。每一段描述会变成一个独立的段落，层次分明，最适合你日常在 Show Text 框里肉眼阅读，或者喂给支持分段解析的国产长视频大模型。
  （空格）：把所有段落首尾相连成一大堆密密麻麻的文字。
