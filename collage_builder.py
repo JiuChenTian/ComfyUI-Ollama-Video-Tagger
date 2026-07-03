@@ -10,9 +10,9 @@ class VideoFrameCollageBuilder:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "images": ("IMAGE",),  # 接收来自 Load Video 的图像批次
+                "images": ("IMAGE",),  # 通用图像接口：支持原图/骨架图/深度图 Tensor [Batch, H, W, 3]
                 "frame_interval": ("INT", {"default": 5, "min": 1, "max": 100, "step": 1}), 
-                "max_frames_per_grid": ("INT", {"default": 25, "min": 4, "max": 144, "step": 1}), # 每张图的子图上限
+                "max_frames_per_grid": ("INT", {"default": 25, "min": 4, "max": 144, "step": 1}), 
                 "thumbnail_size": ("INT", {"default": 384, "min": 128, "max": 768, "step": 64}), 
                 "segment_mode": (["All_Segments_Batch", "Single_Specific_Segment"], {"default": "All_Segments_Batch"}), 
                 "target_segment_index": ("INT", {"default": 0, "min": 0, "max": 100, "step": 1}), 
@@ -26,7 +26,7 @@ class VideoFrameCollageBuilder:
 
     def build_segmented_collage(self, images, frame_interval, max_frames_per_grid, thumbnail_size, segment_mode, target_segment_index):
         image_shape = list(images.shape)
-        total_input_frames = int(image_shape[0])
+        total_input_frames = int(image_shape[0]) # 精确解包提取帧数 [INDEX]
         
         raw_indices = np.arange(0, total_input_frames, frame_interval)
         if len(raw_indices) == 0:
@@ -44,8 +44,7 @@ class VideoFrameCollageBuilder:
             
         final_collage_tensors = []
         
-        # 【核心修正准备】：不论最后一帧剩下多少，整张网格的网格间距（列数/行数）必须以配置的 max_frames_per_grid 为硬标准死锁！
-        # 这样可以确保每个 Segment 拼出来的大画布尺寸绝对恒定
+        # 尺寸死锁逻辑：三轨并行的核心！不论当前片段有多少散帧，均以此尺寸对齐
         grid_size = int(np.ceil(np.sqrt(max_frames_per_grid)))
         cols = grid_size
         rows = grid_size
@@ -66,17 +65,14 @@ class VideoFrameCollageBuilder:
             if not pil_images:
                 continue
                 
-            # 统一采用死锁的 cell 宽高，根据首帧来做特征测量
             widths, heights = zip(*(i.size for i in pil_images))
             cell_w = max(widths)
             cell_h = max(heights)
             
-            # 建立物理尺寸绝对相等的巨型黑底画布
             grid_width = cell_w * cols
             grid_height = cell_h * rows
             collage_pil = Image.new('RGB', (grid_width, grid_height), color=(0, 0, 0))
             
-            # 贴图循环，即便后面格子填不满，也是在相等尺寸的黑底画布上填，完美解决了 entry 尺寸不一致痛点！
             for i, im in enumerate(pil_images):
                 r = i // cols
                 c = i % cols
@@ -92,7 +88,6 @@ class VideoFrameCollageBuilder:
             empty_np = np.zeros((thumbnail_size * rows, thumbnail_size * cols, 3), dtype=np.float32)
             final_batch = torch.from_numpy(empty_np).unsqueeze(0)
         else:
-            final_batch = torch.stack(final_collage_tensors, dim=0)
+            final_batch = torch.stack(final_collage_tensors, dim=0) # [Batch, H, W, 3] 完美的批次输出 [INDEX]
             
-        print(f"[拼图切片中枢] 视频处理完毕。总分段数: {total_segments}，每一分段尺寸完全对齐！本次实际输出大图数: {final_batch.shape}")
         return (final_batch, total_segments,)

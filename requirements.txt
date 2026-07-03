@@ -1,10 +1,4 @@
-requests
+llama-cpp-python
 torch
 pillow
 numpy
-transformers>=4.45.0
-accelerate
-sentencepiece
-# 注意：若使用本地 GGUF 后端，NVIDIA 显卡用户（如 RTX 5090）
-# 请务必在终端使用带 CUDA 编译参数的命令手动安装 llama-cpp-python：
-# $env:CMAKE_ARGS="-GGUIDE -DGGML_CUDA=on"; .\python\python.exe -m pip install llama-cpp-python
