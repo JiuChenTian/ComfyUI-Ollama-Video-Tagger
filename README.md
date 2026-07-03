@@ -1,5 +1,5 @@
 ## ⚠️ 观前提示！！！！
-目前仅尝试ollama转发成功，本地gguf（需要大脑和眼睛-mmproj）和 本地safetensors 暂未尝试
+目前仅跑通ollama转发和本地gguf（需要大脑和眼睛-mmproj），本地safetensors 暂未尝试
 
 
 ## 🛠️ 安装方法（一切环境安装前需要自行判断环境是否缺失）
