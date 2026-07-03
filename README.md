@@ -22,9 +22,10 @@
 
 ## 🛠️ 使用节点说明
 1.Video Frame Collage Builder (Adaptive & Segmented)
-作用：从加载的视频中传入图像，并按5*5（25）或6*6（36）进行循环拼接
+作用：从加载的视频中传入图像，并按m*n的宫格形式自动进行循环拼接
 
-<img width="239" height="273" alt="image" src="https://github.com/user-attachments/assets/0d7131a2-fbe6-44d5-ba9d-d6fcf04ce14c" />
+<img width="452" height="239" alt="image" src="https://github.com/user-attachments/assets/1a8fd6ed-9e96-44ae-a2ba-3c9625fcb040" />
+
 
 1.0 frame_interval：每隔*帧抽取一帧。
 
